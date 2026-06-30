@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="so_arm_100_5dof_gazebo"
+    params="
+      prefix
+      initial_positions_file:=^|''
+      ros2_controllers_file:=^|''
+      use_topic_hardware_interface:=^|false">
+  <!--
+  Parameters
+      prefix: prefix for joints and links
+      initial_positions_file: initial positions file for joints
+      ros2_controllers_file: ros2_controller configuration file for gz_ros2_control
+      use_topic_hardware_interface: true if using topic based control
+  -->
+  <xacro:if value="${initial_positions_file != ''}">
+      <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+  </xacro:if>
+
+  <gazebo>
+    <plugin name="gz::sim::systems::JointStatePublisher"
+      filename="gz-sim-joint-state-publisher-system">
+    </plugin>
+
+    <plugin name="gz::sim::systems::PosePublisher"
+      filename="gz-sim-pose-publisher-system">
+    </plugin>
+
+    <xacro:unless value="${use_topic_hardware_interface}">
+      <plugin filename="gz-sim-physics-system"
+          name="gz::sim::systems::Physics">
+        <engine>
+          <filename>gz-physics-ode-plugin</filename>
+        </engine>
+        <update_rate>1000</update_rate>
+        <gravity>0 0 -9.8</gravity>
+        <max_step_size>0.001</max_step_size>
+        <real_time_factor>1.0</real_time_factor>
+        <real_time_update_rate>1000</real_time_update_rate>
+        <ode>
+          <solver>
+            <type>quick</type>
+            <iters>50</iters>
+          </solver>
+        </ode>
+      </plugin>
+    
+      <plugin filename="gz_ros2_control-system"
+          name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>${ros2_controllers_file}</parameters>
+        <robot_param>robot_description</robot_param>
+        <robot_param_node>robot_state_publisher</robot_param_node>
+      </plugin>
+    </xacro:unless>
+
+    <xacro:if value="${use_topic_hardware_interface}">
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Shoulder_Rotation</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Shoulder_Rotation/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Shoulder_Rotation"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Shoulder_Pitch</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Shoulder_Pitch/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Shoulder_Pitch"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Elbow</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Elbow/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Elbow"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Wrist_Pitch</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Wrist_Pitch/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Wrist_Pitch"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Wrist_Roll</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Wrist_Roll/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Wrist_Roll"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+      <plugin name="gz::sim::systems::JointPositionController"
+        filename="gz-sim-joint-position-controller-system">
+        <joint_name>${prefix}Gripper</joint_name>
+        <!-- <topic>/model/so_arm_100/joint/${prefix}Gripper/0/cmd_pos</topic> -->
+        <p_gain>5.0</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.1</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>100.0</cmd_max>
+        <cmd_min>-100.0</cmd_min>
+        <xacro:if value="${initial_positions_file != ''}">
+          <xacro:property name="joint_name" value="${prefix}Gripper"/>
+          <initial_position>${initial_positions[joint_name]}</initial_position>
+        </xacro:if>
+      </plugin>
+    </xacro:if>
+
+  </gazebo>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,3 @@
+[submodule "mujoco_ros2_control"]
+	path = mujoco_ros2_control
+	url = https://github.com/ros-controls/mujoco_ros2_control.git

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="so_arm_100">
+    <xacro:arg name="prefix" default="" />
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <xacro:arg name="use_fake_hardware" default="false"/>
+    <xacro:arg name="serial_port" default="/dev/ttyUSB0"/>
+    <xacro:arg name="serial_baudrate" default="1000000"/>
+    <xacro:arg name="servo_speed" default="2400"/>
+    <xacro:arg name="servo_acceleration" default="50"/>
+
+    <!-- so_arm_100 -->
+    <xacro:include filename="$(find so_arm_100_description)/urdf/so_arm_100_5dof_arm.urdf.xacro" />
+
+    <!-- ros2_control -->
+    <xacro:include filename="so_arm_100.ros2_control.xacro" />
+
+    <xacro:so_arm_100_5dof prefix="$(arg prefix)" />
+
+    <xacro:so_arm_100_ros2_control 
+        name="SOARM100System" 
+        initial_positions_file="$(arg initial_positions_file)"
+        use_fake_hardware="$(arg use_fake_hardware)"
+        serial_port="$(arg serial_port)"
+        serial_baudrate="$(arg serial_baudrate)"
+        servo_speed="$(arg servo_speed)"
+        servo_acceleration="$(arg servo_acceleration)" /> 
+</robot>

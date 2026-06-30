@@ -1,0 +1,95 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 50  # Hz
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    arm_effort_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_effort_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    effort_controller:
+      type: effort_controllers/JointGroupEffortController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+arm_controller:
+  ros__parameters:
+    joints:
+      - Shoulder_Rotation
+      - Shoulder_Pitch
+      - Elbow
+      - Wrist_Pitch
+      - Wrist_Roll
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+    allow_partial_joints_goal: true
+
+gripper_controller:
+  ros__parameters:
+    joints: 
+      - Gripper
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+
+arm_effort_controller:
+  ros__parameters:
+    joints:
+      - Shoulder_Rotation
+      - Shoulder_Pitch
+      - Elbow
+      - Wrist_Pitch
+      - Wrist_Roll
+    command_interfaces:
+      - effort
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+    gains:
+      Shoulder_Rotation: {p: 75.0, i: 0.0, d: 1.0}
+      Shoulder_Pitch: {p: 75.0, i: 0.0, d: 1.0}
+      Elbow: {p: 75.0, i: 0.0, d: 1.0}
+      Wrist_Pitch: {p: 75.0, i: 0.0, d: 1.0}
+      Wrist_Roll: {p: 75.0, i: 0.0, d: 1.0}
+
+gripper_effort_controller:
+  ros__parameters:
+    joints:
+      - Gripper
+    command_interfaces:
+      - effort
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+    gains:
+      Gripper: {p: 75.0, i: 0.0, d: 1.0}
+
+effort_controller:
+  ros__parameters:
+    joints:
+      - Shoulder_Rotation
+      - Shoulder_Pitch
+      - Elbow
+      - Wrist_Pitch
+      - Wrist_Roll
+      - Gripper

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="so_arm_100_5dof_system"
+    params="
+      name
+      prefix
+      initial_positions_file:=^|''
+      use_sim:=^|false
+      use_topic_hardware_interface:=^|false
+      use_fake_hardware:=^|false
+      serial_port:=^|/dev/ttyUSB0
+      serial_baudrate:=^|1000000
+      servo_speed:=^|2400
+      servo_acceleration:=^|50">
+    <!--
+    Parameters
+        name: name given to the controller system
+        prefix: prefix for joints and links
+        initial_positions_file: initial positions file for joints
+        use_sim: true if using Gazebo
+        use_topic_hardware_interface: true if using topic based control
+        use_fake_hardware: true if not use_sim and using fake hardware
+        serial_port: servo controller board serial port
+        serial_baudrate: servo controller board serial baudrate
+        servo_speed: servo move speed in ticks/s
+        servo_acceleration: servo move acceleration in ticks/s^2
+    -->
+  <xacro:if value="${initial_positions_file != ''}">
+      <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+  </xacro:if>
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <xacro:if value="${use_sim}">
+          <xacro:if value="${use_topic_hardware_interface}">
+            <plugin>joint_state_topic_hardware_interface/JointStateTopicSystem</plugin>
+            <param name="joint_commands_topic">robot_joint_commands</param>
+            <param name="joint_states_topic">robot_joint_states</param>
+          </xacro:if>
+          <xacro:unless value="${use_topic_hardware_interface}">
+            <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
+            <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+            <param name="mujoco_model">/home/deviant/so101_moveit_ws/src/so101_mujoco/scene.xml</param>
+          </xacro:unless>
+        </xacro:if>
+        <xacro:unless value="${use_sim}">
+          <xacro:if value="${use_fake_hardware}">
+            <plugin>mock_components/GenericSystem</plugin>
+          </xacro:if>
+          <xacro:unless value="${use_fake_hardware}">
+            <plugin>so_arm_100_controller/SOARM100Interface</plugin>
+            <param name="use_serial">true</param>
+            <param name="serial_port">${serial_port}</param>
+            <param name="serial_baudrate">${serial_baudrate}</param>
+            <param name="servo_speed">${servo_speed}</param>
+            <param name="servo_acceleration">${servo_acceleration}</param>
+          </xacro:unless>
+        </xacro:unless>
+      </hardware>
+
+      <joint name="${prefix}Shoulder_Rotation">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Shoulder_Rotation"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}Shoulder_Pitch">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Shoulder_Pitch"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}Elbow">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Elbow"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}Wrist_Pitch">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Wrist_Pitch"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}Wrist_Roll">
+        <command_interface name="position">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Wrist_Roll"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="${prefix}Gripper">
+        <command_interface name="position">
+          <param name="min">-0.1792</param>
+          <param name="max">1.57</param>
+          <xacro:if value="${initial_positions_file != ''}">
+            <xacro:property name="joint_name" value="${prefix}Gripper"/>
+            <param name="initial_value">${initial_positions[joint_name]}</param>
+          </xacro:if>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+    </ros2_control>
+
+  </xacro:macro>
+</robot>
