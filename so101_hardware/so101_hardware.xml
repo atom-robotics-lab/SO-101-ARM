@@ -1,0 +1,11 @@
+<library path="so101_hardware">
+  <class name="so101_hardware/SO101HardwareInterface"
+         type="so101_hardware::SO101HardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Real-hardware SO-101 SystemInterface. Bridges to the real Feetech motors
+      via the feetech_bridge_node (ROS2 topics), which wraps lerobot's
+      SO101Follower / FeetechMotorsBus. 
+    </description>
+  </class>
+</library>

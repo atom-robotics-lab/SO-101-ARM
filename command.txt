@@ -1,0 +1,6 @@
+feetech driver 
+ros2 run robot_state_publisher robot_state_publisher --ros-args   -p robot_description:="$(xacro /home/deviant/so101_moveit_ws/src/so_arm_100_moveit_config/config/so_arm_100.urdf.xacro)"
+ros2 run controller_manager ros2_control_node --ros-args   --remap '~/robot_description:=/robot_description'   --params-file /home/deviant/so101_moveit_ws/src/so_arm_100_moveit_config/config/ros2_controllers.yaml
+
+spawners no need to run them 
+moveit 

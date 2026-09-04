@@ -8,8 +8,8 @@ controller_manager:
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
     
-    gripper_controller:
-      type: parallel_gripper_action_controller/GripperActionController
+    # gripper_controller:
+    #   type: parallel_gripper_action_controller/GripperActionController
 
 arm_controller:
   ros__parameters:
@@ -24,8 +24,8 @@ arm_controller:
       - position
     state_interfaces:
       - position
-      - velocity
-      - effort
+      # - velocity
+      # - effort
     state_publish_rate: 50.0
     action_monitor_rate: 20.0
     constraints:

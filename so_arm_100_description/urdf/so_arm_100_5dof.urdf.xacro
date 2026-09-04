@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <robot name="so_arm_100_5dof" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:arg name="prefix" default="" />
+  <xacro:arg name="serial_port" default="/dev/ttyACM0" />
   <xacro:arg name="initial_positions_file" default="" />
-  <xacro:arg name="use_sim" default="true" />
-  <xacro:arg name="use_topic_hardware_interface" default="false" />
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="use_topic_hardware_interface" default="true" />
   <xacro:arg name="use_fake_hardware" default="false" />
   <xacro:arg name="ros2_control_type" default="so_arm_100_5dof_position" />
   <xacro:arg name="ros2_controllers_file" default="" />

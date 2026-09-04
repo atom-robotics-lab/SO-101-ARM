@@ -1,84 +1,95 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:macro name="so_arm_100_ros2_control" params="name initial_positions_file use_fake_hardware serial_port:=^|/dev/ttyUSB0 serial_baudrate:=^|1000000 servo_speed:=^|2400 servo_acceleration:=^|50" >
+        <xacro:macro name="so_arm_100_ros2_control" params="name initial_positions_file use_fake_hardware prefix:=^|'' serial_port:=^|/dev/ttyUSB0 serial_baudrate:=^|1000000 servo_speed:=^|2400 servo_acceleration:=^|50" >        
         <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
 
         <ros2_control name="${name}" type="system">
             <hardware>
-                <xacro:if value="${use_fake_hardware}">
-                    <!-- <plugin>mock_components/GenericSystem</plugin> -->
-                    <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-                    <param name="mujoco_model">/home/deviant/so101_moveit_ws/src/so101_mujoco/scene.xml</param>
-                </xacro:if>
-                <xacro:unless value="${use_fake_hardware}">
-                    <plugin>so_arm_100_controller/SOARM100Interface</plugin>
-                    <param name="use_serial">true</param>
-                    <param name="serial_port">${serial_port}</param>
-                    <param name="serial_baudrate">${serial_baudrate}</param>
-                    <param name="servo_speed">${servo_speed}</param>
-                    <param name="servo_acceleration">${servo_acceleration}</param>
-                </xacro:unless>
+
+                <plugin>so101_hardware/SO101HardwareInterface</plugin>
+                <param name="commands_topic">/so101/hardware_commands</param>
+                <param name="states_topic">/so101/hardware_states</param>
+
             </hardware>
-            <joint name="Shoulder_Rotation">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Shoulder_Rotation']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
-            <joint name="Shoulder_Pitch">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Shoulder_Pitch']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
-            <joint name="Elbow">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Elbow']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
-            <joint name="Wrist_Pitch">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Wrist_Pitch']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
-            <joint name="Wrist_Roll">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Wrist_Roll']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
-            <joint name="Gripper">
-                <command_interface name="position"/>
-                <command_interface name="velocity"/>
-                <command_interface name="effort"/>
-                <state_interface name="position">
-                  <param name="initial_value">${initial_positions['Gripper']}</param>
-                </state_interface>
-                <state_interface name="velocity"/>
-                <state_interface name="effort"/>
-            </joint>
+
+        <joint name="${prefix}Shoulder_Rotation">
+            <command_interface name="position">
+            <param name="min">-1.8</param>
+            <param name="max">1.8</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Shoulder_Rotation"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>
+        <joint name="${prefix}Shoulder_Pitch">
+            <command_interface name="position">
+            <param name="min">-1.7</param>
+            <param name="max">1.7</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Shoulder_Pitch"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>
+        <joint name="${prefix}Elbow">
+            <command_interface name="position">
+            <param name="min">-1.5</param>
+            <param name="max">1.5</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Elbow"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>
+        <joint name="${prefix}Wrist_Pitch">
+            <command_interface name="position">
+            <param name="min">-1.658</param>
+            <param name="max">1.658</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Wrist_Pitch"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>
+        <joint name="${prefix}Wrist_Roll">
+            <command_interface name="position">
+            <param name="min">-2.75</param>
+            <param name="max">2.75</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Wrist_Roll"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>
+        <joint name="${prefix}Gripper">
+            <command_interface name="position">
+            <param name="min">-0.13</param>
+            <param name="max">1.3</param>
+            <xacro:if value="${initial_positions_file != ''}">
+                <xacro:property name="joint_name" value="${prefix}Gripper"/>
+                <param name="initial_value">${initial_positions[joint_name]}</param>
+            </xacro:if>
+            </command_interface>
+            <state_interface name="position"/>
+            <!-- <state_interface name="velocity"/> -->
+            <!-- <state_interface name="effort"/> -->
+        </joint>    
 
         </ros2_control>
     </xacro:macro>
